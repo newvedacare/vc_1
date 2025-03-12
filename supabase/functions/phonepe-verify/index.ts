@@ -4,8 +4,25 @@ import { crypto } from "https://deno.land/std@0.208.0/crypto/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Allow-Methods': '*',
+  'Access-Control-Max-Age': '86400',
+  'Access-Control-Allow-Credentials': 'true'
+};
+
+// Function to check if origin is from vedahaircare.in domain
+const isVedaHaircareDomain = (origin: string | null): boolean => {
+  if (!origin) return false;
+  return origin.endsWith('vedahaircare.in') || origin === 'https://vedahaircare.in';
+};
+
+// Function to handle CORS headers based on origin
+const getCorsHeaders = (req: Request) => {
+  const origin = req.headers.get('origin');
+  return {
+    ...corsHeaders,
+    'Access-Control-Allow-Origin': isVedaHaircareDomain(origin) ? origin : '*'
+  };
 };
 
 const MERCHANT_ID = Deno.env.get('PHONEPE_MERCHANT_ID');
@@ -18,7 +35,9 @@ const SALT_INDEX = Deno.env.get('PHONEPE_SALT_INDEX') || '1';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { 
+      headers: getCorsHeaders(req)
+    });
   }
 
   try {
@@ -107,8 +126,8 @@ Deno.serve(async (req) => {
         data: statusResponse
       }),
       { 
-        headers: { 
-          ...corsHeaders,
+        headers: {
+          ...getCorsHeaders(req),
           'Content-Type': 'application/json'
         }
       }
