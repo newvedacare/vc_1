@@ -385,6 +385,7 @@ export type Database = {
       }
       products: {
         Row: {
+          average_rating: number | null
           category: string
           created_at: string | null
           description: string
@@ -404,6 +405,7 @@ export type Database = {
           version: number
         }
         Insert: {
+          average_rating?: number | null
           category: string
           created_at?: string | null
           description: string
@@ -423,6 +425,7 @@ export type Database = {
           version: number
         }
         Update: {
+          average_rating?: number | null
           category?: string
           created_at?: string | null
           description?: string
@@ -469,6 +472,44 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          created_at: string | null
+          id: string
+          product_id: number
+          rating: number
+          review_text: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          product_id: number
+          rating: number
+          review_text?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          product_id?: number
+          rating?: number
+          review_text?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

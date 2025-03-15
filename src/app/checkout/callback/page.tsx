@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+import { OrderTracking } from "@/components/order-tracking";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -109,6 +110,12 @@ function PaymentCallbackContent() {
           </button>
           <h1 className="text-2xl font-semibold">Payment {status === 'success' ? 'Successful' : 'Failed'}</h1>
         </div>
+
+        {status === 'success' && searchParams?.get('orderId') && (
+          <div className="mb-8">
+            <OrderTracking orderId={searchParams.get('orderId')!} />
+          </div>
+        )}
 
         <div className="bg-white rounded-lg shadow-sm p-6 text-center">
           {status === 'success' ? (

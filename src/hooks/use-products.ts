@@ -35,18 +35,21 @@ export function useProducts() {
   useEffect(() => {
     async function loadProducts() {
       try {
+        setLoading(true);
         const { data: productsData, error: productsError } = await supabase
           .from("products")
           .select("*")
           .order('created_at', { ascending: false });
 
         if (productsError) {
+          console.error("Failed to load products:", productsError);
           toast.error("Failed to load products");
-          throw productsError;
+          setProducts([]); // Set empty products on error
+          return;
         }
 
+        // Even if no products, set empty array
         if (!productsData || productsData.length === 0) {
-          toast.warning("No products found");
           setProducts([]);
           return;
         }
@@ -64,6 +67,7 @@ export function useProducts() {
       } catch (error) {
         console.error("Error loading products:", error);
         toast.error("Error loading products");
+        setProducts([]); // Set empty products on error
       } finally {
         setLoading(false);
       }

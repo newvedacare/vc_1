@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { FeaturedProducts } from "@/components/featured-products";
 import { FAQSection } from "@/components/faq-section";
 import { ProductCard } from "@/components/product-card";
+import { ProductReviews } from "@/components/product-reviews";
 import { useProducts } from "@/hooks/use-products";
 
 export default function HomePage() {
@@ -12,7 +13,19 @@ export default function HomePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Show message if no products
+  if (!products || products.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h2 className="text-2xl font-semibold mb-4">No Products Available</h2>
+        <p className="text-gray-600">Please check back later for our product listings.</p>
       </div>
     );
   }
@@ -94,7 +107,12 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold mb-12 text-center">Our Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <div key={product.id}>
+                <ProductCard product={product} />
+                <div className="mt-8">
+                  <ProductReviews productId={product.id} />
+                </div>
+              </div>
             ))}
           </div>
         </div>

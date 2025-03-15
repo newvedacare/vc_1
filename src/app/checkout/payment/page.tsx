@@ -84,13 +84,8 @@ function PaymentContent() {
         throw new Error('Payment initialization failed');
       }
 
-      // Redirect to PhonePe payment page
-      if (paymentData.data?.paymentUrl) {
-        window.location.href = paymentData.data.paymentUrl;
-      } else {
-        toast.error('Invalid payment URL');
-        throw new Error('Invalid payment URL');
-      }
+      // Payment is handled by Razorpay SDK
+      // No need to redirect as the SDK opens a popup
 
     } catch (error) {
       console.error("Payment processing error:", error);
